@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="align">
+    <div id="game">
+        <div class="container">
+            <h1>Who wants to be a millionaire?</h1>
+            <transition name="fade" mode="out-in">
+                <div v-if="feedBackVisable"  v-bind:class="feedBackClass"key="save" class="feedBack-message">
+                  
+                    {{feedBackMessage}}
+                   
+                    <!-- key nes naudojam div, tarp kabcuciu, bet kas -->
+                    <!-- kaip mes submitinam, norim paordyti si diva ir paskui iskart paslepti-->
+                    
+                </div>
+                <div v-else key="edit">
+                    <div v-if="currentView == 'intro'">
+                        <p>
+                            Welcome!!! take 15 questions and you will be rich!!!!
+                            <div>
+                                <button class="btn btn-info btn-game" v-on:click="startGame">Play</button>
+                            </div>
+                        </p>
+                    </div>
+                    <div v-if="currentView == 'game'">
+                        <div class="row">
+                            <div class="col-10">
+                                <h2>{{currentQuestion.question}}</h2>
+                                <ul class="row answers ">
+                                    <li class="col-sm-6 mb-3" v-for="(answer, index) in currentQuestion.content">
+                                        <!-- index- kad zinotume kuris mygtukas v-bind naudojamas, kai paspaudziama pridedam klase -->
+                                        <button class="btn mygtukas" 
+                                        v-bind:class="{'btn-success':userAnswer === index} " v-on:click="userAnswer = index">
+                                        {{answer}}
+                                    </button>
+                                    </li>
+                                </ul>
+                                <!-- v-if="userAnswer !== null - jei nepamigus ats nerodo mygtuku confirm ar collect money -->
+                                <div class="continue text-center space" v-if="userAnswer !== null">
+                                    <button class="btn btn-info" @click="submitAnswer">Confirm</button>
+                                    <button class="btn btn-danger" @click="goHome">Collect money</button>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <score v-bind:current-level="level"></score>
+                                <!-- atvaizduoja is score.component.js failo esanti turini, level- musu kitamasis is data.-->
+                                
+                                <button class="btn btn-warning" v-if="helpAvailable.fiftyFifty" v-on:click="removeSomeQuestions">50 / 50</button>
+                                
+                                </ul>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- kai jis blogai atsako atvaizduoti si diva -->
+                    <div v-if="currentView == 'gameOver'">
+                        <h1>Game Over</h1>
+                        <h3> Your answer is incorrect</h3>
+                        <p>See you next time</p>
+                        <!-- paspaudus vykdyti startGame -->
+                        <button @click="startGame">Are you ready to play again?</button>
+                    </div>
+                    <div v-if="currentView == 'gameWon'">
+                        <h1>Congratulation</h1>
+                        <h3> You just won 1 mln. dollars </h3>
+                        <p>See you next time</p>
+                        <!-- paspaudus vykdyti startGame -->
+                        <button @click="startGame">Are you ready to won again?</button>
+                    </div>
+
+                    <div v-if="currentView == 'goHome'">
+                        <h1>Congratulation</h1>
+                        <h2>You just won {{money[currentMoney]}}</h2>
+                        <button @click="startGame">Are you ready to take a money again?</button>
+                    </div>
+                </div>
+            </transition>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="questions.js"></script>
+    <script src="score.component.js"></script>
+    <!-- pinigu bar'as-->
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+<!-- kad tilptu i mygtuka reikia whitespace -->
